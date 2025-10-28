@@ -146,11 +146,11 @@ export default function ShopDynamic() {
                     className="bg-card rounded-xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300 hover:scale-105"
                   >
                     {/* Product Image */}
-                    <div className="relative h-48 bg-muted -z-10">
+                    <div className="relative h-48 bg-muted">
                       <img
                         src={product.image}
                         alt={product.title}
-                        className="w-full h-full object-cover "
+                        className="w-full h-full object-cover"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src =
                             "/images/placeholder.png";
