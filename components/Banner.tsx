@@ -59,7 +59,7 @@ export default function Banner() {
           </Button>
           <Button className="rounded-full h-12 text-xl font-bold border border-border bg-card text-card-foreground hover:bg-accent hover:text-accent-foreground">
             <MdEventAvailable className="mr-2 text-2xl" />
-            <a href="/book">Book us</a>
+            <a href="/services">Book us</a>
           </Button>
         </motion.div>
       </motion.div>
