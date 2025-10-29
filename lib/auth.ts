@@ -26,7 +26,6 @@ export const checkAdminAccess = async () => {
     console.error("Error checking admin access:", error);
     return { isAdmin: false, user: null };
   }
-  console.log('Loaded ADMIN_EMAILS:', ADMIN_EMAILS)
 };
 
 export const signInWithEmail = async (email: string, password: string) => {
