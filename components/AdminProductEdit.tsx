@@ -133,7 +133,7 @@ export default function AdminProductEdit({ productId }: Props) {
           </Button>
         </div>
 
-        <Card className="p-6">
+  <Card className="p-6 -z-10">
           <form onSubmit={handleSave} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
@@ -237,7 +237,7 @@ export default function AdminProductEdit({ productId }: Props) {
           {/* Live Preview */}
           <div className="mt-6">
             <h3 className="text-lg font-semibold text-foreground mb-3">Preview</h3>
-            <Card className="p-4">
+            <Card className="p-4 -z-10">
               <div className="flex flex-col md:flex-row gap-4 items-start">
                 <div className="w-full md:w-48 h-auto bg-muted rounded overflow-hidden">
                   {imagePreview ? (

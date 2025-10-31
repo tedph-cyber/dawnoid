@@ -107,7 +107,7 @@ export default function AdminProductManagement() {
 
         {/* Products Grid */}
         {products.length === 0 ? (
-          <Card className="p-12 text-center bg-card border border-border">
+          <Card className="p-12 text-center bg-card border border-border -z-10">
             <div className="text-6xl mb-4">📦</div>
             <h3 className="text-xl font-semibold text-foreground mb-2">
               No Products Found
@@ -128,7 +128,7 @@ export default function AdminProductManagement() {
             {products.map((product) => (
               <Card
                 key={product.id}
-                className="overflow-hidden border border-border hover:shadow-lg transition-shadow"
+                className="overflow-hidden border border-border hover:shadow-lg transition-shadow -z-10"
               >
                 {/* Product Image */}
                 <div className="relative h-48 bg-muted">
@@ -136,7 +136,7 @@ export default function AdminProductManagement() {
                     <img
                       src={product.image_url}
                       alt={product.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover "
                       onError={(e) => {
                         (e.target as HTMLImageElement).src =
                           "/images/placeholder.png";
@@ -224,7 +224,7 @@ export default function AdminProductManagement() {
         {/* Footer Stats */}
         {products.length > 0 && (
           <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card className="p-4 text-center bg-card border border-border">
+            <Card className="p-4 text-center bg-card border border-border -z-10">
               <div className="text-2xl font-bold text-primary">
                 {products.length}
               </div>
@@ -233,21 +233,21 @@ export default function AdminProductManagement() {
               </div>
             </Card>
 
-            <Card className="p-4 text-center bg-card border border-border">
+            <Card className="p-4 text-center bg-card border border-border -z-10">
               <div className="text-2xl font-bold text-green-600">
                 {products.filter((p) => p.available).length}
               </div>
               <div className="text-sm text-muted-foreground">Available</div>
             </Card>
 
-            <Card className="p-4 text-center bg-card border border-border">
+            <Card className="p-4 text-center bg-card border border-border -z-10">
               <div className="text-2xl font-bold text-red-600">
                 {products.filter((p) => !p.available).length}
               </div>
               <div className="text-sm text-muted-foreground">Out of Stock</div>
             </Card>
 
-            <Card className="p-4 text-center bg-card border border-border">
+            <Card className="p-4 text-center bg-card border border-border -z-10">
               <div className="text-2xl font-bold text-blue-600">
                 {Object.keys(productCategories).length}
               </div>

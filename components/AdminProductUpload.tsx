@@ -201,7 +201,7 @@ export default function AdminProductUpload({ onUploadSuccess }: AdminProductUplo
         </div>
 
         {/* Upload Form */}
-        <Card className="p-6 bg-card border border-border">
+  <Card className="p-6 bg-card border border-border -z-10">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

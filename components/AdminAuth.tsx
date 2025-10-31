@@ -57,7 +57,7 @@ export default function AdminAuth({ children }: AdminAuthProps) {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center py-12 px-4">
-        <Card className="w-full max-w-md p-8 bg-card border border-border">
+  <Card className="w-full max-w-md p-8 bg-card border border-border -z-10">
           <div className="text-center mb-8">
             <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
               <FaLock className="text-primary text-2xl" />
