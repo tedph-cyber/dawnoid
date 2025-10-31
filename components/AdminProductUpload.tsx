@@ -189,9 +189,9 @@ export default function AdminProductUpload({ onUploadSuccess }: AdminProductUplo
               </p>
             </div>
             <div className="flex gap-3">
-              <Button 
-                variant="outline" 
-                onClick={() => window.location.href = '/admin/manage'}
+              <Button
+                variant="outline"
+                onClick={() => (window.location.href = '/admin/manage')}
               >
                 <FaEdit className="mr-2" />
                 Manage Products

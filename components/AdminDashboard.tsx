@@ -6,11 +6,14 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { FaPlus, FaEdit, FaTrash, FaBox, FaUsers, FaChartLine, FaImage, FaList, FaUpload } from 'react-icons/fa'
 import { productService, SupabaseProduct } from '@/lib/supabase'
+import { useRouter } from 'next/navigation'
 import AdminProductUpload from './AdminProductUpload'
+import AdminProductEdit from './AdminProductEdit'
 
 type TabType = 'dashboard' | 'products' | 'upload'
 
 export default function AdminDashboard() {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState<TabType>('dashboard')
   const [products, setProducts] = useState<SupabaseProduct[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -73,6 +76,10 @@ export default function AdminDashboard() {
   const handleProductUploadSuccess = () => {
     loadProducts() // Reload products when a new one is uploaded
     setActiveTab('products') // Switch to products tab to see the new product
+  }
+
+  const handleEditProduct = (productId: string) => {
+    <AdminProductEdit productId={productId} />
   }
 
   return (
@@ -244,6 +251,7 @@ export default function AdminDashboard() {
                         <Button
                           size="sm"
                           variant="outline"
+                          onClick={() => router.push(`/admin/manage/edit/${product.id}`)}
                           className="h-8 w-8 p-0"
                         >
                           <FaEdit className="text-xs" />
@@ -279,6 +287,13 @@ export default function AdminDashboard() {
                           : "N/A"}
                       </span>
                     </div>
+
+                    {/* Description (preserve newlines) */}
+                    {product.description && (
+                      <p className="text-sm text-muted-foreground mt-2 whitespace-pre-line">
+                        {product.description}
+                      </p>
+                    )}
                   </div>
                 </div>
               </Card>
@@ -307,6 +322,7 @@ export default function AdminDashboard() {
                     <th className="text-left p-4 font-medium text-foreground">
                       Product
                     </th>
+                    <th className="text-left p-4 font-medium text-foreground">Description</th>
                     <th className="text-left p-4 font-medium text-foreground">
                       Category
                     </th>
@@ -352,7 +368,12 @@ export default function AdminDashboard() {
                             </p>
                           </div>
                         </div>
-                      </td>
+                        </td>
+                        <td className="p-4 max-w-xs">
+                          <div className="text-sm text-muted-foreground whitespace-pre-line max-h-20 overflow-auto">
+                            {product.description}
+                          </div>
+                        </td>
                       <td className="p-4">
                         <Badge variant="outline" className="capitalize">
                           {product.category}
@@ -380,7 +401,7 @@ export default function AdminDashboard() {
                       </td>
                       <td className="p-4">
                         <div className="flex items-center gap-2">
-                          <Button size="sm" variant="outline">
+                          <Button size="sm" variant="outline" onClick={() => router.push(`/admin/manage/edit/${product.id}`)}>
                             <FaEdit className="text-xs" />
                           </Button>
                           <Button

@@ -6,6 +6,7 @@ import { FaWhatsapp } from "react-icons/fa6";
 import CategorySlider from "./CategorySlider";
 import { useProducts } from "@/hooks/useProducts";
 import { ProductCategory, productCategories } from "@/data/products";
+import ImageLightbox from "./ImageLightbox";
 
 export type Product = {
   id: string;
@@ -54,6 +55,7 @@ function ProductSkeleton() {
 
 export default function ShopDynamic() {
   const { products, loading, error } = useProducts();
+  const [lightboxImage, setLightboxImage] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<
     ProductCategory | "all"
   >("all");
@@ -139,7 +141,7 @@ export default function ShopDynamic() {
                 </p>
               </div>
             ) : (
-              <div className="-z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredProducts.map((product) => (
                   <div
                     key={product.id}
@@ -150,7 +152,15 @@ export default function ShopDynamic() {
                       <img
                         src={product.image}
                         alt={product.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover cursor-pointer"
+                        onClick={() => setLightboxImage(product.image)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            setLightboxImage(product.image);
+                          }
+                        }}
+                        role="button"
+                        tabIndex={0}
                         onError={(e) => {
                           (e.target as HTMLImageElement).src =
                             "/images/placeholder.png";
@@ -167,11 +177,11 @@ export default function ShopDynamic() {
 
                     {/* Product Info */}
                     <div className="p-4">
-                      <h3 className="font-semibold text-foreground mb-2 line-clamp-2">
+                      <h3 className="font-semibold text-foreground mb-2">
                         {product.title}
                       </h3>
 
-                      <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                      <p className="text-sm text-muted-foreground mb-3">
                         {product.description}
                       </p>
 
@@ -195,12 +205,15 @@ export default function ShopDynamic() {
 
                         <Button
                           size="sm"
-                          className="rounded-full"
+                          className="rounded-full bg-[#25D366] hover:bg-[#1da851] text-white"
                           disabled={!product.available}
                           onClick={() => {
-                            if (product.link && product.link !== "#") {
-                              window.open(product.link, "_blank");
-                            }
+                            // Build a prefilled WhatsApp message for this product
+                            const phone = "2347080982579"; // business number, international format without +
+                            const message = `Hello, I would like to purchase *${product.title}* priced at *${product.currency || 'NGN'} ${product.price}*.` +
+                              (product.link && product.link !== "#" ? `\nProduct link: ${product.link}` : "");
+                            const url = `https://wa.me/${phone}?text=` + encodeURIComponent(message);
+                            window.open(url, "_blank");
                           }}
                         >
                           <FaWhatsapp className="mr-1 text-sm" />
@@ -210,6 +223,9 @@ export default function ShopDynamic() {
                     </div>
                   </div>
                 ))}
+                {lightboxImage && (
+                  <ImageLightbox src={lightboxImage} alt="Product image" onClose={() => setLightboxImage("")} />
+                )}
               </div>
             )}
           </>

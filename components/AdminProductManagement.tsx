@@ -1,63 +1,68 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { productService, SupabaseProduct } from '@/lib/supabase'
-import { productCategories } from '@/data/products'
-import { FaEdit, FaTrash, FaEye, FaPlus, FaSpinner } from 'react-icons/fa'
-import Link from 'next/link'
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { productService, SupabaseProduct } from "@/lib/supabase";
+import { productCategories } from "@/data/products";
+import { FaEdit, FaTrash, FaEye, FaPlus, FaSpinner } from "react-icons/fa";
+import Link from "next/link";
 
 export default function AdminProductManagement() {
-  const [products, setProducts] = useState<SupabaseProduct[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string>('')
-  const [deleteLoading, setDeleteLoading] = useState<string | null>(null)
+  const [products, setProducts] = useState<SupabaseProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>("");
+  const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
 
   const fetchProducts = async () => {
     try {
-      setLoading(true)
-      const data = await productService.getAllProducts()
-      setProducts(data || [])
+      setLoading(true);
+      const data = await productService.getAllProducts();
+      setProducts(data || []);
     } catch (err: any) {
-      setError(err.message || 'Failed to fetch products')
+      setError(err.message || "Failed to fetch products");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchProducts()
-  }, [])
+    fetchProducts();
+  }, []);
 
   const handleDelete = async (id: string, title: string) => {
-    if (!confirm(`Are you sure you want to delete "${title}"? This action cannot be undone.`)) {
-      return
+    if (
+      !confirm(
+        `Are you sure you want to delete "${title}"? This action cannot be undone.`
+      )
+    ) {
+      return;
     }
 
     try {
-      setDeleteLoading(id)
-      await productService.deleteProduct(id)
-      await fetchProducts() // Refresh the list
+      setDeleteLoading(id);
+      await productService.deleteProduct(id);
+      await fetchProducts(); // Refresh the list
     } catch (err: any) {
-      alert('Failed to delete product: ' + err.message)
+      alert("Failed to delete product: " + err.message);
     } finally {
-      setDeleteLoading(null)
+      setDeleteLoading(null);
     }
-  }
+  };
 
-  const formatPrice = (price: number, currency = 'NGN') => {
-    return new Intl.NumberFormat('en-US', { 
-      style: 'currency', 
-      currency 
-    }).format(price)
-  }
+  const formatPrice = (price: number, currency = "NGN") => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency,
+    }).format(price);
+  };
 
   const renderStars = (rating = 0) => {
-    const filled = '★'.repeat(Math.round(rating))
-    const empty = '☆'.repeat(5 - Math.round(rating))
-    return `${filled}${empty}`
-  }
+    const filled = "★".repeat(Math.round(rating));
+    const empty = "☆".repeat(5 - Math.round(rating));
+    return `${filled}${empty}`;
+  };
 
   if (loading) {
     return (
@@ -69,14 +74,14 @@ export default function AdminProductManagement() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="min-h-screen bg-background py-8 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center flex-col justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-2">
               Product Management
@@ -108,7 +113,8 @@ export default function AdminProductManagement() {
               No Products Found
             </h3>
             <p className="text-muted-foreground mb-6">
-              You haven't added any products yet. Start by adding your first product!
+              You haven't added any products yet. Start by adding your first
+              product!
             </p>
             <Link href="/admin">
               <Button>
@@ -120,7 +126,10 @@ export default function AdminProductManagement() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map((product) => (
-              <Card key={product.id} className="overflow-hidden border border-border hover:shadow-lg transition-shadow">
+              <Card
+                key={product.id}
+                className="overflow-hidden border border-border hover:shadow-lg transition-shadow"
+              >
                 {/* Product Image */}
                 <div className="relative h-48 bg-muted">
                   {product.image_url ? (
@@ -129,7 +138,8 @@ export default function AdminProductManagement() {
                       alt={product.title}
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/images/placeholder.png'
+                        (e.target as HTMLImageElement).src =
+                          "/images/placeholder.png";
                       }}
                     />
                   ) : (
@@ -140,33 +150,36 @@ export default function AdminProductManagement() {
                       </div>
                     </div>
                   )}
-                  
+
                   {/* Category Badge */}
                   <div className="absolute top-2 left-2">
                     <span className="px-2 py-1 bg-primary/90 text-primary-foreground text-xs rounded-full font-medium">
-                      {productCategories[product.category]?.icon} {productCategories[product.category]?.label}
+                      {productCategories[product.category]?.icon}{" "}
+                      {productCategories[product.category]?.label}
                     </span>
                   </div>
 
                   {/* Availability Badge */}
                   <div className="absolute top-2 right-2">
-                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                      product.available 
-                        ? 'bg-green-500/90 text-white' 
-                        : 'bg-red-500/90 text-white'
-                    }`}>
-                      {product.available ? 'Available' : 'Out of Stock'}
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full font-medium ${
+                        product.available
+                          ? "bg-green-500/90 text-white"
+                          : "bg-red-500/90 text-white"
+                      }`}
+                    >
+                      {product.available ? "Available" : "Out of Stock"}
                     </span>
                   </div>
                 </div>
 
                 {/* Product Info */}
                 <div className="p-4">
-                  <h3 className="font-semibold text-foreground mb-2 line-clamp-2">
+                  <h3 className="font-semibold text-foreground mb-2">
                     {product.title}
                   </h3>
-                  
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+
+                  <p className="text-sm text-muted-foreground mb-3 whitespace-pre-line">
                     {product.description}
                   </p>
 
@@ -190,40 +203,16 @@ export default function AdminProductManagement() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1"
-                      onClick={() => {
-                        // TODO: Implement edit functionality
-                        alert('Edit functionality coming soon!')
-                      }}
-                    >
-                      <FaEdit className="mr-1" />
-                      Edit
-                    </Button>
-                    
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="flex-1"
-                      disabled={deleteLoading === product.id}
-                      onClick={() => handleDelete(product.id!, product.title)}
-                    >
-                      {deleteLoading === product.id ? (
-                        <FaSpinner className="mr-1 animate-spin" />
-                      ) : (
-                        <FaTrash className="mr-1" />
-                      )}
-                      Delete
-                    </Button>
-                  </div>
+                  <ActionsBlock
+                    product={product}
+                    deleteLoading={deleteLoading}
+                    onDelete={handleDelete}
+                  />
 
                   {/* Metadata */}
                   <div className="mt-3 pt-3 border-t border-border">
                     <p className="text-xs text-muted-foreground">
-                      Added: {product.created_at ? new Date(product.created_at).toLocaleDateString() : 'Unknown'}
+                      Added: {product.created_at ? new Date(product.created_at).toLocaleDateString() : "Unknown"}
                     </p>
                   </div>
                 </div>
@@ -236,24 +225,28 @@ export default function AdminProductManagement() {
         {products.length > 0 && (
           <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card className="p-4 text-center bg-card border border-border">
-              <div className="text-2xl font-bold text-primary">{products.length}</div>
-              <div className="text-sm text-muted-foreground">Total Products</div>
+              <div className="text-2xl font-bold text-primary">
+                {products.length}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Total Products
+              </div>
             </Card>
-            
+
             <Card className="p-4 text-center bg-card border border-border">
               <div className="text-2xl font-bold text-green-600">
-                {products.filter(p => p.available).length}
+                {products.filter((p) => p.available).length}
               </div>
               <div className="text-sm text-muted-foreground">Available</div>
             </Card>
-            
+
             <Card className="p-4 text-center bg-card border border-border">
               <div className="text-2xl font-bold text-red-600">
-                {products.filter(p => !p.available).length}
+                {products.filter((p) => !p.available).length}
               </div>
               <div className="text-sm text-muted-foreground">Out of Stock</div>
             </Card>
-            
+
             <Card className="p-4 text-center bg-card border border-border">
               <div className="text-2xl font-bold text-blue-600">
                 {Object.keys(productCategories).length}
@@ -264,5 +257,46 @@ export default function AdminProductManagement() {
         )}
       </div>
     </div>
-  )
+  );
+}
+
+function ActionsBlock({
+  product,
+  deleteLoading,
+  onDelete,
+}: {
+  product: SupabaseProduct;
+  deleteLoading: string | null;
+  onDelete: (id: string, title: string) => void;
+}) {
+  const router = useRouter();
+
+  return (
+    <div className="flex flex-col sm:flex-row gap-2">
+      <Button
+        variant="outline"
+        size="sm"
+        className="w-full sm:flex-1"
+        onClick={() => router.push(`/admin/manage/edit/${product.id}`)}
+      >
+        <FaEdit className="mr-1" />
+        Edit
+      </Button>
+
+      <Button
+        variant="destructive"
+        size="sm"
+        className="w-full sm:flex-1"
+        disabled={deleteLoading === product.id}
+        onClick={() => onDelete(product.id!, product.title)}
+      >
+        {deleteLoading === product.id ? (
+          <FaSpinner className="mr-1 animate-spin" />
+        ) : (
+          <FaTrash className="mr-1" />
+        )}
+        Delete
+      </Button>
+    </div>
+  );
 }
